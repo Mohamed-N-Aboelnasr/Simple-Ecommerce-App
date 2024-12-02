@@ -1,0 +1,33 @@
+version: '3.7'
+services:
+  mysql-db:
+    image: mysql:8.0    
+    container_name: mysql-db
+    hostname: mysql-db
+    restart: always
+    volumes:
+      - mysql_data:/var/lib/mysql    
+    ports:
+      - 3306:3306
+      - 33060:33060
+    environment:
+      MYSQL_ROOT_PASSWORD: "P@ssw0rd"
+      MYSQL_DATABASE: "mydb"
+  
+  mysql-workbench:
+    image: linuxserver/mysql-workbench:latest
+    container_name: mysql-workbench
+    hostname: mysql-workbench
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - ./db-schema-scripts:/usr/databases
+    ports:
+      - 3000:3000
+    cap_add:
+      - IPC_LOCK
+    restart: unless-stopped
+
+volumes:
+  mysql_data:    
